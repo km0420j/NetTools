@@ -28,7 +28,6 @@ class CiscoSwitchTool():
                 # check for 'incomplete' mac address
                 
                 # check if IP matches, if true return MAC
-                pdb.set_trace()
                 if entry[1] == ip_addr:
                     # check for 'incomplete' mac address
                     if entry[3] == 'Incomplete':
@@ -97,3 +96,12 @@ class CiscoSwitchTool():
             return None
         port = self.port_from_mac(mac_addr)
         return (port)
+
+    ####################################
+    # return the hostname of device
+    ####################################
+    def get_switch_name(self):
+        command = 'sh run | inc hostname'
+        output = self.net_connect.send_command(command)
+        return output.strip('hostname ')
+

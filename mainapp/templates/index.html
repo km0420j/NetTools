@@ -1,0 +1,13 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Find a User</h1>
+  <form action="" method="post" name="submit">
+    {{ form.hidden_tag() }}
+    <div class='inputform'>
+      <div class='formtext'>IP Address:<span class='textbox'>{{ form.ip_addr(size=20) }}<input type="submit" value="Submit"></span></div>
+    </dev>
+  </form>
+{% endblock %}
+

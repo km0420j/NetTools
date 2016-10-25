@@ -2,12 +2,12 @@
 
 import socket
 import base64
-from cisco_switch_tool import *
-import credentials
+from .cisco_switch_tool import *
+from .credentials import username, password
 
 device = {
-    'username': base64.b64decode(credentials.username),
-    'password': base64.b64decode(credentials.password),
+    'username': base64.b64decode(username),
+    'password': base64.b64decode(password),
     'ip': '',
     'device_type': 'cisco_ios',
 }
@@ -34,12 +34,13 @@ def find_core(ip_addr):
 
 def find_port(ip_addr):
     device['ip'] = find_core(ip_addr)
+    switch_ip = device['ip']
     switch = CiscoSwitchTool(**device)
     mac = switch.mac_from_ip(ip_addr)
     if mac == None:
         return (None, None, None)
     port = switch.port_from_ip(ip_addr)
-    pdb.set_trace()
+    name = switch.get_switch_name()
     while port.startswith('Po'):
         ports = switch.ports_from_etherchannel(port[2:])
         name, switch_ip = switch.find_cdp_neighbor(ports[0])
@@ -48,8 +49,7 @@ def find_port(ip_addr):
         port = switch.port_from_mac(mac)
     if name is not 'CORE' and name is not None:
         device['ip'] = switch_ip
-        #pdb.set_trace()
-        switch = SwitchTool(**device)
+        switch = CiscoSwitchTool(**device)
         port = switch.port_from_mac(mac)
     return (name, switch_ip, port)
 
@@ -58,6 +58,7 @@ def find_port(ip_addr):
 #ip_add = input('Enter an IP address: ')
 #
 ###
+'''
 ip_add=''
 choice = ''
 while choice.lower() not in ['i','n']:
@@ -81,4 +82,4 @@ if ip_add != None:
 else:
     print("Device not found")
 
-
+'''
