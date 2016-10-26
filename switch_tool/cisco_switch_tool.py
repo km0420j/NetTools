@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 import pdb
 import re
-from netmiko import ConnectHandler
+from netmiko import ConnectHandler, NetMikoTimeoutException
 
 class CiscoSwitchTool():
 
 
     def __init__(self,**kwargs):
-        self.net_connect = ConnectHandler(**kwargs)
-        self.ip = kwargs['ip']
-    
-
+        try:
+            self.net_connect = ConnectHandler(**kwargs)
+            self.ip = kwargs['ip']
+        except:
+            raise NetMikoTimeoutException
     ##############################################
     # search ARP table for mac based in IP address
     # return mac or None if not found
@@ -101,7 +102,10 @@ class CiscoSwitchTool():
     # return the hostname of device
     ####################################
     def get_switch_name(self):
-        command = 'sh run | inc hostname'
-        output = self.net_connect.send_command(command)
-        return output.strip('hostname ')
+        #command = 'show run | inc hostname'
+        #output = self.net_connect.send_command(command)
+        #pdb.set_trace()
+        output = self.net_connect.find_prompt()
+        #pdb.set_trace()
+        return output.strip('#')
 

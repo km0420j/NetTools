@@ -1,7 +1,8 @@
+import socket
 from flask import render_template, flash, redirect, request, url_for
 from mainapp import app
 from .forms import NetForm
-from switch_tool import cisco_switch_tool, run
+from switch_tool import cisco_switch_tool, switch_tool_app
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -9,7 +10,14 @@ from switch_tool import cisco_switch_tool, run
 def _index():
     form = NetForm(request.form)
     if request.method == 'POST' and form.validate_on_submit():
-        do_stuff(form.ip_addr.data)
+        if form.ip_addr.data:
+            do_stuff(form.ip_addr.data)
+        elif form.computername.data:
+            ip_addr = dns_query(form.computername.data) 
+            if ip_addr != None:
+                do_stuff(ip_addr)            
+            else:
+                flash('Cannot find computername')
         return redirect('/index')
     else:
         flash_errors(form)
@@ -25,5 +33,13 @@ def flash_errors(form):
             ), 'error')
 
 def do_stuff(ip_addr):
-    flash(run.find_port(ip_addr))
-
+    try:
+        flash(switch_tool_app.find_port(ip_addr))
+    except:
+        flash('ERROR: could not connect to switch')
+ 
+def dns_query(name):
+    try:
+        return socket.gethostbyname(name)
+    except:
+        return None

@@ -5,7 +5,8 @@ import re
 
 class NetForm(Form):
 
-    ip_addr = StringField('ip_addr', validators=[validators.DataRequired(), validators.IPAddress(message='Please enter a valid IP')])
+    ip_addr = StringField('ip_addr', validators=[validators.Optional(), validators.IPAddress(message='Please enter a valid IP')])
 
+    computername = StringField('computername', validators=[validators.Optional()])
 
 
