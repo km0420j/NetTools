@@ -2,7 +2,7 @@
 
 import socket
 import base64
-from . import cisco_switch_tool
+from . import cisco_switch_tool, juniper_switch_tool
 from .credentials import username, password
 import pdb
 
@@ -75,6 +75,7 @@ def _juniper_find_port(ip_addr):
     switch_ip = device['ip']
     switch = juniper_switch_tool.JuniperSwitchTool(**device)
     mac = switch.mac_from_ip(ip_addr)
+    pdb.set_trace()
     if mac == None:
         return (None, None, None)
     port = switch.port_from_ip(ip_addr)

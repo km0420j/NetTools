@@ -18,6 +18,8 @@ def _index():
                 do_stuff(ip_addr)            
             else:
                 flash('Cannot find computername')
+        elif form.username.data:
+            flash(ldap_search.computer_by_user(form.username.data))
         return redirect('/index')
     else:
         flash_errors(form)

@@ -7,9 +7,11 @@ class JuniperSwitchTool():
 
 
     def __init__(self,**kwargs):
-        self.net_connect = ConnectHandler(**kwargs)
-        self.ip = kwargs['ip']
-    
+        try:
+            self.net_connect = ConnectHandler(**kwargs)
+            self.ip = kwargs['ip']
+        except:
+            raise NetMikoTimeoutException
 
     ##############################################
     # search ARP table for mac based in IP address
@@ -17,6 +19,7 @@ class JuniperSwitchTool():
     ##############################################
     def mac_from_ip(self,ip_addr):
         cli_output = self.net_connect.send_command("sh arp no-resolve | match " + ip_addr)
+        pdb.set_trace()
         if (cli_output == ''):
             print("IP Address not found " + ip_addr)
             return None
@@ -41,7 +44,8 @@ class JuniperSwitchTool():
     # return port or None if not found
     #############################################
     def port_from_mac(self,mac_addr):
-        cli_output = self.net_connect.send_command("sh mac add | inc " + mac_addr)
+        cli_output = self.net_connect.send_command("show ethernet-switching table | match " + mac_addr)
+        pdb.set_trace()
         if (cli_output == ""):
             print("MAC Address not found")
             return None

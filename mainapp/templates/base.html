@@ -51,8 +51,7 @@
           <input type="text" class="form-control" placeholder="Search">
         </div>
  
-{% endblock %}
-{% block content %}
+<div>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <ul>
@@ -63,5 +62,5 @@
       {% endif %}
     {% endwith %}
 {% endblock %}
-
-
+</div>
+{% block content %}{% endblock %}

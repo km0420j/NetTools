@@ -1,0 +1,46 @@
+import sys
+import ldap.resiter
+import ldap
+import time
+import base64 
+from credentials import ldapusername as username
+from credentials import ldappassword as password
+
+
+class MyLDAPObject(ldap.ldapobject.LDAPObject,ldap.resiter.ResultProcessor):
+    pass
+
+def ldap_computer_search(user, city):
+    OU_MAP = { 'pdx': 'ou=PDX Computers,ou=PDX',
+               'sea': 'ou=SEA Computers,ou=SEA',
+               'dc': 'ou=DC Computers,ou=DC',
+               'nyc': 'ou=NYC Computers, ou=NYC',
+               'lax': 'ou=LAX Computers,ou=LAX',
+               'van': 'ou=VAN Computers,ou=VAN'
+             }
+    l = MyLDAPObject('ldap://172.20.1.187')
+    l.simple_bind_s(base64.b64decode(username), base64.b64decode(password))
+    #time.sleep(5)
+
+    search_root = '{},ou=ZGF Root,dc=zgf,dc=local'.format(OU_MAP[city])
+    search_filter = 'sAMAccountName={}'.format(user)
+    returned_attr = ['ipPhone', 'sAMAccountName']
+    #print '----searching for {} in {}'.format(user, search_root)
+    msg_id = l.search(search_root,ldap.SCOPE_SUBTREE,search_filter,returned_attr)
+
+    for res_type,res_data,res_msgid,res_controls in l.allresults(msg_id):
+        for dn,entry in res_data:
+            if 'ipPhone' in entry:
+                return (entry['ipPhone'], entry['sAMAccountName'])
+            else:
+                return entry['sAMAccountName']
+def run(name, city):
+    print ldap_user_search(name, city)
+
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print 'Usage: ldap_search [username] [city]' 
+    else:
+        print ldap_user_search(sys.argv[1], sys.argv[2])
+
+
