@@ -19,24 +19,20 @@ class JuniperSwitchTool():
     ##############################################
     def mac_from_ip(self,ip_addr):
         cli_output = self.net_connect.send_command("sh arp no-resolve | match " + ip_addr)
-        pdb.set_trace()
+
         if (cli_output == ''):
             print("IP Address not found " + ip_addr)
             return None
         else:
             # interate through output
             # find the line that matches IP
-            for x in cli_output.replace('\n','').splitlines():
+            for x in cli_output.splitlines():
                 entry = (x.split())
                 # check for 'incomplete' mac address
-                
-                # check if IP matches, if true return MAC
-                pdb.set_trace()
-                if entry[2] == ip_addr:
-                    # check for 'incomplete' mac address
-                    if entry[3] == 'Incomplete':
-                        return None
-                    else:
+                if len(entry) > 2:
+                    # check if IP matches, if true return MAC
+                    # pdb.set_trace()
+                    if entry[1] == ip_addr:
                         return entry[1]
 
     #############################################
@@ -45,7 +41,7 @@ class JuniperSwitchTool():
     #############################################
     def port_from_mac(self,mac_addr):
         cli_output = self.net_connect.send_command("show ethernet-switching table | match " + mac_addr)
-        pdb.set_trace()
+        # pdb.set_trace()
         if (cli_output == ""):
             print("MAC Address not found")
             return None
