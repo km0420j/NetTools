@@ -2,7 +2,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div>
+<body>
+<div class=".container-fluid">
+<div class="row">
   <h1>Find a User</h1>
   <form action="" method="post" class="form-inline">
     {{ form.hidden_tag() }}
@@ -17,4 +19,6 @@
     </div> 
   </form>
 </div>
+</div>
+</body>
 {% endblock %}

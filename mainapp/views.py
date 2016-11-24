@@ -38,7 +38,6 @@ def do_stuff(ip_addr):
     try:
         flash(switch_tool_app.find_port(ip_addr))
     except:
-        pdb.set_trace()
         flash('ERROR: could not connect to switch')
  
 def dns_query(name):
