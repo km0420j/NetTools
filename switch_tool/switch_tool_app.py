@@ -79,8 +79,8 @@ def _juniper_find_port(ip_addr):
         return (None, None, None)
     port = switch.port_from_ip(ip_addr)
     name = switch.get_switch_name()
-    while port.startswith('Po'):
-        ports = switch.ports_from_etherchannel(port[2:])
+    while port.startswith('ae'):
+        ports = switch.ports_from_aggregate(port)
         name, switch_ip = switch.find_neighbor(ports[0])
         device['ip'] = switch_ip
         switch = juniper_switch_tool.JuniperSwitchTool(**device)

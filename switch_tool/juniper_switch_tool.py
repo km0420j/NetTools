@@ -19,7 +19,7 @@ class JuniperSwitchTool():
     ##############################################
     def mac_from_ip(self,ip_addr):
         cli_output = self.net_connect.send_command("sh arp no-resolve | match " + ip_addr)
-
+        pdb.set_trace()
         if (cli_output == ''):
             print("IP Address not found " + ip_addr)
             return None
@@ -33,7 +33,7 @@ class JuniperSwitchTool():
                     # check if IP matches, if true return MAC
                     # pdb.set_trace()
                     if entry[1] == ip_addr:
-                        return entry[1]
+                        return entry[0]
 
     #############################################
     # Search mac-address table for mac address
@@ -41,7 +41,7 @@ class JuniperSwitchTool():
     #############################################
     def port_from_mac(self,mac_addr):
         cli_output = self.net_connect.send_command("show ethernet-switching table | match " + mac_addr)
-        # pdb.set_trace()
+        #pdb.set_trace()
         if (cli_output == ""):
             print("MAC Address not found")
             return None
@@ -49,27 +49,30 @@ class JuniperSwitchTool():
             for x in cli_output.splitlines():
                 entry = x.split()
                 print(entry)
-                return entry[3]
+                if len(entry) > 1 and entry[1] == mac_addr:
+                    return entry[4]
+        return None
     #############################################
     # gather information about a channel-group
     # return list of ports in group
     #############################################
-    def ports_from_etherchannel(self,channel_group_num):
+    def ports_from_aggregate(self,channel_group_num):
         port_list = []
-        command = 'sh etherchannel {} detail'.format(channel_group_num)
+        command = 'sh lldp neighbors | match {}'.format(channel_group_num)
         output = self.net_connect.send_command(command)
-        for line in output.splitlines():
-            m = re.search('^Port: (.*)', line)
-            if m is not None:
-                port_list.append(m.group(1))
+         
+        pdb.set_trace()
+        for line in output.strip('0 \n').splitlines():
+            if line.split()[0] is not None:
+                port_list.append(line.split()[0])
         
         return port_list
     #######################################################
     # find CDP neighbor on port
     # function returns tuple with name,ip of CDP neighbor
     #######################################################
-    def find_cdp_neighbor(self,port):
-        command = 'sh cdp neighbors {} detail'.format(port)
+    def find_neighbor(self,port):
+        command = 'sh lldp neighbors interface {} | match "Address |System name"'.format(port)
         output = self.net_connect.send_command(command)
         if output == "":
             return None
@@ -77,13 +80,13 @@ class JuniperSwitchTool():
             name = ''
             ip_addr = ''
             for line in output.splitlines():
-                m1 = re.search('^Device ID: (.*)', line)
-                m2 = re.search('^  IP address: (.*)', line)
+                pdb.set_trace()
+                m1 = re.search('\s+Address\s+: (.*)', line)
+                m2 = re.search('^System name\s+: (.*)', line)
                 if m1 is not None:
-                    name = m1.group(1)
-                elif m2 is not None:
-                    ip_addr = m2.group(1)
-            
+                    ip_addr = m1.group(1)
+                if m2 is not None:
+                    name = m2.group(1)            
             return ((name, ip_addr))
  
     ####################################
@@ -93,7 +96,17 @@ class JuniperSwitchTool():
     ####################################
     def port_from_ip(self,ip_addr):
         mac_addr = self.mac_from_ip(ip_addr)
+        pdb.set_trace()
         if mac_addr is None:
             return None
         port = self.port_from_mac(mac_addr)
         return (port)
+    
+    def get_switch_name(self):
+        #command = 'show run | inc hostname'
+        #output = self.net_connect.send_command(command)
+        #pdb.set_trace()
+        output = self.net_connect.find_prompt()
+        pdb.set_trace()
+        # prompt is 'username@devicename>', strip carot, split and return device name
+        return output.strip('>').split('@')[1]
