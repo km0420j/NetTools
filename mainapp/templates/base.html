@@ -13,6 +13,16 @@
     {% endif %}
 {% endblock %}
 {% block header %}
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+{% block content %}{% endblock %}
 <!-- <header> -->
 <!--  <div class="container-fluid">
 <nav class="navbar navbar-default">
@@ -52,17 +62,4 @@
         </div>
 </header>
 {% endblock %} -->
-<body>
-<div class="row">
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-{% block content %}{% endblock %}
-</body>
-</div>
+
