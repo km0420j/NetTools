@@ -9,18 +9,20 @@ from switch_tool import cisco_switch_tool, switch_tool_app
 @app.route('/index', methods=['GET', 'POST'])
 def _index():
     form = NetForm(request.form)
+    message = ''
     if request.method == 'POST' and form.validate_on_submit():
         if form.ip_addr.data:
-            do_stuff(form.ip_addr.data)
+            message = do_stuff(form.ip_addr.data)
         elif form.computername.data:
-            ip_addr = dns_query(form.computername.data) 
+            ip_addr = dns_query(form.computername.data)
             if ip_addr != None:
-                do_stuff(ip_addr)            
+                message = do_stuff(ip_addr)
             else:
-                flash('Cannot find computername')
+                message = 'Cannot find computername'
         elif form.username.data:
-            flash(ldap_search.computer_by_user(form.username.data))
-        return redirect('/index')
+            message = ldap_search.computer_by_user(form.username.data)
+        flash(message, 'info')
+        #return render_template('modal.html', message=message)
     else:
         flash_errors(form)
     return render_template('index.html', form=form)
@@ -36,9 +38,11 @@ def flash_errors(form):
 
 def do_stuff(ip_addr):
     try:
-        flash(switch_tool_app.find_port(ip_addr))
+        #flash(switch_tool_app.find_port(ip_addr))
+        return switch_tool_app.find_port(ip_addr)
     except:
-        flash('ERROR: could not connect to switch')
+        #flash('ERROR: could not connect to switch')
+        return 'ERROR: could not connect to switch'
  
 def dns_query(name):
     try:
