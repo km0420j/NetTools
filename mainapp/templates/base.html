@@ -1,13 +1,15 @@
-
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
-{% import "bootstrap/utils.html" as utils %}
+<!doctype HTML>
+<html>
 {% block title %}
     {% if title %}
        {{ title }}
     {% else %}
        NetTools
     {% endif %}
+{% endblock %}
+{% block styles %}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='style.css')}}">
 {% endblock %}
 <body>
   {% with messages = get_flashed_messages() %}

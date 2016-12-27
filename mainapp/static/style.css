@@ -19,4 +19,5 @@ h2              { font-size: 1.2em; }
 .formtext    	{ margin: 10px; }
 .textbox 		{ float: right; position: relative; }
 .inputform		{width: 500px}
-
+input[type="button"]     {margin-left: 10px;}
+label {padding: 10px;}

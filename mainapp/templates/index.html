@@ -7,13 +7,13 @@
   <h1>Find a User</h1>
   <form action="" method="post" class="form-inline">
     {{ form.hidden_tag() }}
-    <div class='form-group'>
+    <div class='form-group myinput'>
       <label for="ip_addr" class='col-sm-2 control-label'>IP Address:{{ form.ip_addr(size=20) }}<input type="submit" value="Submit"></label>
     </div>
-    <div class='form-group'>
+    <div class='form-group myinput'>
       <label for='computername' class='col-sm-2 control-label'>Computer Name:{{ form.computername(size=20) }}<input type="submit" value="Submit"></span></label>
     </div> 
-    <div class='form-group'>
+    <div class='form-group myinput'>
       <label for='username' class='col-sm-2 control-label'>User Name:{{ form.username(size=20) }}<input type="submit" value="Submit"></span></label>
     </div>
     <div class="row">
@@ -21,7 +21,7 @@
       <input type="submit" value="Submit" name="test">
     </div>
     </div>
+    </div>
   </form>
-</div>
 </div>
 {% endblock %}
